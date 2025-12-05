@@ -15,22 +15,11 @@ export const GAME_DATA = {
         { id: "kills", name: "Monster Slayers", desc: "Defeat 20 monsters as a group" }
     ],
     monsterDeck: [
-        // Lowered AGI from 10 to 9. Lowered HP from 12 to 10.
         { name: "Goblin Warlord", atk: 4, agi: 9, arm: 0, hp: 10, sprite: "👺", quantity: 6 }, 
-        
-        // Lowered AGI from 13 to 11. Lowered HP from 10 to 8.
         { name: "Skeleton King", atk: 5, agi: 11, arm: 1, hp: 8, sprite: "💀", quantity: 6 },  
-        
-        // Lowered AGI from 8 to 7. Lowered HP from 22 to 18.
         { name: "Orc Behemoth", atk: 6, agi: 7, arm: 2, hp: 18, sprite: "👹", quantity: 4 },   
-        
-        // Lowered AGI from 6 to 5. Lowered HP from 25 to 20.
         { name: "Giant Slime", atk: 3, agi: 5, arm: 0, hp: 20, sprite: "💧", quantity: 4 },
-        
-        // BOSS: Lowered AGI from 11 to 10. Lowered HP from 35 to 30.
         { name: "Minotaur", atk: 7, agi: 10, arm: 2, hp: 30, sprite: "🐂", quantity: 1 },
-        
-        // BOSS: Lowered AGI from 14 to 12. Lowered HP from 60 to 45.
         { name: "Red Dragon", atk: 9, agi: 12, arm: 4, hp: 45, sprite: "🐉", quantity: 1 }    
     ],
     itemDeck: [
