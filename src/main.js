@@ -1,6 +1,6 @@
 import { GAME_DATA, CELL_SIZE } from './data.js';
 import { gameState, selectedClasses, selectedVictory, pickRandom, drawCard } from './state.js';
-import { log, combatLog, showModal, updateUI } from './ui.js';
+import { log, combatLog, showModal, updateUI, animateDiceRoll } from './ui.js';
 
 // --- GAME LOGIC ---
 
@@ -377,43 +377,69 @@ function updateCombatUI() {
     document.getElementById('combat-player-stats').innerText = `HP: ${p.hp}/${p.maxHp} | ATK: ${p.class.atk} | AGI: ${p.class.agi}`;
 }
 
-function runCombatRound(action) {
+async function runCombatRound(action) {
     const p = gameState.players[gameState.combat.playerIndex];
     const m = gameState.combat.monster;
     document.getElementById('combat-actions').classList.add('hidden');
     
     if (action === 'attack') {
-        let atk = p.class.atk; if(p.inventory.includes("Iron Sword")) atk++;
-        const roll = Math.floor(Math.random()*6)+1 + Math.floor(Math.random()*6)+1;
-        combatLog(`Rolled ${roll} + ATK ${atk} = ${roll+atk}`);
-        if(roll+atk >= m.agi) {
+        let atk = p.class.atk; 
+        if(p.inventory.includes("Iron Sword")) atk++;
+
+        // 1. Calculate the rolls separately
+        const d1 = Math.floor(Math.random()*6)+1;
+        const d2 = Math.floor(Math.random()*6)+1;
+        const total = d1 + d2 + atk;
+
+        // 2. Determine Hit boolean
+        const isHit = total >= m.agi;
+
+        // 3. Await the visual animation
+        await animateDiceRoll(d1, d2, isHit);
+
+        combatLog(`Rolled ${d1}+${d2} (+${atk} ATK) = ${total}`);
+        
+        if(isHit) {
             const dmg = Math.max(1, atk - m.arm);
             m.currentHp -= dmg;
             combatLog(`HIT! ${dmg} damage.`);
-        } else combatLog("MISS!");
+        } else {
+            combatLog("MISS!");
+        }
     } else if (action === 'item') { 
         const idx = p.inventory.indexOf("Potion");
         if (idx > -1) {
             p.inventory.splice(idx, 1);
             p.hp = Math.min(p.maxHp, p.hp + 5);
             combatLog(`You drank a potion. Recovered 5 HP.`);
+            // Short pause for pacing if using item
+            await new Promise(r => setTimeout(r, 1000));
         }
     }
 
     updateCombatUI();
-    if(m.currentHp <= 0) { setTimeout(() => { combatLog("VICTORY!"); document.getElementById('combat-continue-btn').classList.remove('hidden'); }, 1000); return; }
+    if(m.currentHp <= 0) { 
+        setTimeout(() => { 
+            combatLog("VICTORY!"); 
+            document.getElementById('combat-continue-btn').classList.remove('hidden'); 
+        }, 500); 
+        return; 
+    }
     
+    // Monster Turn
     setTimeout(() => {
         const roll = Math.floor(Math.random()*6)+1 + Math.floor(Math.random()*6)+1;
+        // Optional: You could animate monster dice too, but for now we keep it fast
         if(roll+m.atk >= p.class.agi) {
             const dmg = Math.max(1, m.atk - p.class.arm);
             p.hp -= dmg;
             combatLog(`${m.name} hits for ${dmg}!`);
         } else combatLog(`${m.name} missed!`);
+        
         updateCombatUI();
         if(p.hp <= 0) { combatLog("Collapsed..."); setTimeout(endCombatRound, 2000); }
         else setTimeout(endCombatRound, 1000);
-    }, 1000);
+    }, 500);
 }
 
 function endCombatRound() {
