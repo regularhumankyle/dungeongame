@@ -1,5 +1,3 @@
-// src/data.js
-
 export const CELL_SIZE = 50;
 
 export const GAME_DATA = {
@@ -35,9 +33,75 @@ export const GAME_DATA = {
         { name: "Falling Net", desc: "You are entangled.", effect: "Turn Ends", quantity: 5 },
         { name: "Tripwire", desc: "Watch your step!", effect: "1 Damage", quantity: 5 }
     ],
-    // ... Copy the rest of mapCards and corridors from your original file here ...
-    // Note: To keep this response short, I'm abbreviating. 
-    // You must paste the full 'mapCards' and 'corridors' objects here!
-    mapCards: { /* ... PASTE MAP CARDS HERE ... */ },
-    corridors: { /* ... PASTE CORRIDORS HERE ... */ }
+    mapCards: {
+        "dungeonEntrance": { 
+            id: "dungeonEntrance", name: "Entrance", type: "room", locked: false, quantity: 1,
+            grid: [ 
+                { walls: ['top', 'left'] }, { walls: [] }, { walls: ['top', 'right'] }, 
+                { walls: [] }, { walls: [] }, { walls: [] }, 
+                { walls: ['bottom', 'left'] }, { walls: [] }, { walls: ['bottom', 'right'] } 
+            ] 
+        },
+        "room_crossroads": { 
+            id: "room_crossroads", name: "Crossroads Room", type: "room", locked: false, quantity: 10,
+            grid: [ 
+                { walls: ['top', 'left'] }, { walls: [] }, { walls: ['top', 'right'] }, 
+                { walls: [] }, { walls: [] }, { walls: [] }, 
+                { walls: ['bottom', 'left'] }, { walls: [] }, { walls: ['bottom', 'right'] } 
+            ] 
+        },
+        "room_great_hall": { 
+            id: "room_great_hall", name: "Great Hall", type: "room", locked: false, quantity: 10,
+            grid: [ 
+                { walls: ['top', 'left'] }, { walls: [] }, { walls: ['top', 'right'] }, 
+                { walls: [] }, { walls: [] }, { walls: [] }, 
+                { walls: ['bottom', 'left'] }, { walls: ['bottom'] }, { walls: ['bottom', 'right'] } 
+            ] 
+        },
+        "room_prison": { 
+            id: "room_prison", name: "Dungeon Prison", type: "room", locked: true, quantity: 5,
+            grid: [ 
+                { walls: ['top', 'left'] }, { walls: [] }, { walls: ['top', 'right'] }, 
+                { walls: ['left'] }, { walls: [] }, { walls: ['right'] }, 
+                { walls: ['bottom', 'left'] }, { walls: [] }, { walls: ['bottom', 'right'] } 
+            ] 
+        },
+        "room_vault": { 
+            id: "room_vault", name: "Treasure Vault", type: "room", locked: true, quantity: 5,
+            grid: [ 
+                { walls: ['top', 'left'] }, { walls: [] }, { walls: ['top', 'right'] }, 
+                { walls: ['left'] }, { walls: [] }, { walls: ['right'] }, 
+                { walls: ['bottom', 'left'] }, { walls: [] }, { walls: ['bottom', 'right'] } 
+            ] 
+        },
+        "room_mid_boss": { 
+            id: "room_mid_boss", name: "Lair of the Beast", type: "room", locked: true, quantity: 1,
+            grid: [ 
+                { walls: ['top', 'left'] }, { walls: [] }, { walls: ['top', 'right'] }, 
+                { walls: ['left'] }, { walls: [] }, { walls: ['right'] }, 
+                { walls: ['bottom', 'left'] }, { walls: [] }, { walls: ['bottom', 'right'] } 
+            ] 
+        },
+        "room_final_boss": { 
+            id: "room_final_boss", name: "Dragon's Keep", type: "room", locked: true, quantity: 1,
+            grid: [ 
+                { walls: ['top', 'left'] }, { walls: [] }, { walls: ['top', 'right'] }, 
+                { walls: ['left'] }, { walls: [] }, { walls: ['right'] }, 
+                { walls: ['bottom', 'left'] }, { walls: [] }, { walls: ['bottom', 'right'] } 
+            ] 
+        }
+    },
+    corridors: {
+        "hall_ns": { id: "hall_ns", name: "Hallway (NS)", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]},{walls:['left','right']},{type:'void', walls:[]},{type:'void', walls:[]},{walls:['left','right']},{type:'void', walls:[]},{type:'void', walls:[]},{walls:['left','right']},{type:'void', walls:[]}] },
+        "hall_ew": { id: "hall_ew", name: "Hallway (EW)", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]},{type:'void', walls:[]},{type:'void', walls:[]},{walls:['top','bottom']},{walls:['top','bottom']},{walls:['top','bottom']},{type:'void', walls:[]},{type:'void', walls:[]},{type:'void', walls:[]}] },
+        "corner_ne": { id: "corner_ne", name: "Corner (NE)", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]},{walls:['top','left']},{type:'void', walls:[]},{type:'void', walls:[]},{walls:['bottom','right']},{walls:['top','bottom']},{type:'void', walls:[]},{type:'void', walls:[]},{type:'void', walls:[]}] }, 
+        "corner_nw": { id: "corner_nw", name: "Corner (NW)", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]},{walls:['top','right']},{type:'void', walls:[]},{walls:['top','bottom']},{walls:['bottom','left']},{type:'void', walls:[]},{type:'void', walls:[]},{type:'void', walls:[]},{type:'void', walls:[]}] }, 
+        "corner_se": { id: "corner_se", name: "Corner", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]},{type:'void', walls:[]},{type:'void', walls:[]},{walls:['left','top']},{walls:['bottom','right']},{type:'void', walls:[]},{type:'void', walls:[]},{walls:['left','right']},{type:'void', walls:[]}] },
+        "corner_sw": { id: "corner_sw", name: "Corner (SW)", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]},{type:'void', walls:[]},{type:'void', walls:[]},{walls:['top','bottom']},{walls:['top','right']},{type:'void', walls:[]},{type:'void', walls:[]},{walls:['left','right']},{type:'void', walls:[]}] },
+        "t_north": { id: "t_north", name: "T-Junction (N)", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]}, {type:'void', walls:[]}, {type:'void', walls:[]}, {walls:['top','bottom']}, {walls:['top']}, {walls:['top','bottom']}, {type:'void', walls:[]}, {walls:['left','right']}, {type:'void', walls:[]}] },
+        "t_south": { id: "t_south", name: "T-Junction (S)", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]}, {walls:['left','right']}, {type:'void', walls:[]}, {walls:['top','bottom']}, {walls:['bottom']}, {walls:['top','bottom']}, {type:'void', walls:[]}, {type:'void', walls:[]}, {type:'void', walls:[]} ] },
+        "t_east": { id: "t_east", name: "T-Junction (E)", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]}, {walls:['left','right']}, {type:'void', walls:[]}, {walls:['top','bottom']}, {walls:['right']}, {type:'void', walls:[]}, {type:'void', walls:[]}, {walls:['left','right']}, {type:'void', walls:[]}] },
+        "t_west": { id: "t_west", name: "T-Junction (W)", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]}, {walls:['left','right']}, {type:'void', walls:[]}, {type:'void', walls:[]}, {walls:['left']}, {walls:['top','bottom']}, {type:'void', walls:[]}, {walls:['left','right']}, {type:'void', walls:[]}] },
+        "crossroads": { id: "crossroads", name: "Junction", type: "corridor", quantity: 5, grid: [{type:'void', walls:[]}, {walls:['left','right']}, {type:'void', walls:[]}, {walls:['top','bottom']}, {walls:[]}, {walls:['top','bottom']}, {type:'void', walls:[]}, {walls:['left','right']}, {type:'void', walls:[]}] }
+    }
 };
