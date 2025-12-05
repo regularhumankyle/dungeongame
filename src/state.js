@@ -1,5 +1,3 @@
-// src/state.js
-
 export let gameState = {
     players: [], 
     currentPlayerIndex: 0, 
