@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen antialiased overflow-hidden">
-    <div id="app-container" class="p-4 md:p-6 max-w-full mx-auto h-screen flex flex-col">
+<body class="bg-gray-900 text-gray-100 min-h-screen antialiased lg:overflow-hidden">
+    <div id="app-container" class="p-4 md:p-6 max-w-full mx-auto min-h-screen lg:h-screen flex flex-col">
         
         <div id="setup-screen" class="h-full overflow-y-auto pb-32">
              <div class="flex justify-between items-center mb-4">
@@ -37,15 +37,15 @@
              </div>
         </div>
 
-        <div id="game-screen" class="hidden flex flex-col lg:flex-row h-full gap-4 pb-2">
+        <div id="game-screen" class="hidden flex flex-col lg:flex-row h-full gap-4 pb-2 lg:overflow-hidden">
             
-            <div class="flex-grow flex flex-col h-full min-h-0">
+            <div class="flex-grow flex flex-col min-h-[50vh] lg:h-full">
                 <div id="map-container" class="relative flex-grow w-full bg-black border-4 border-gray-700 rounded-lg overflow-hidden shadow-inner">
                     <div id="map-area"></div>
                 </div>
             </div>
 
-            <div class="flex-shrink-0 w-full lg:w-80 flex flex-col gap-3 h-full overflow-hidden">
+            <div class="flex-shrink-0 w-full lg:w-80 flex flex-col gap-3 h-auto lg:h-full lg:overflow-hidden">
                 
                 <div id="victory-tracker" class="bg-green-900 p-2 rounded shadow border border-green-700 text-xs text-green-100 flex-shrink-0">
                     <h3 class="font-bold uppercase mb-1">Objectives</h3>
@@ -67,22 +67,22 @@
                         <button id="end-turn-btn" class="bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-1 px-3 rounded text-xs shadow-sm">End Turn</button>
                     </div>
                     
-                    <div class="grid grid-cols-3 gap-1 w-32 mx-auto">
-                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-10 flex items-center justify-center font-bold text-white text-sm" data-dx="-1" data-dy="-1">↖</button>
-                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-10 flex items-center justify-center font-bold text-white text-sm" data-dx="0" data-dy="-1">↑</button>
-                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-10 flex items-center justify-center font-bold text-white text-sm" data-dx="1" data-dy="-1">↗</button>
+                    <div class="grid grid-cols-3 gap-2 w-48 mx-auto">
+                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-9 flex items-center justify-center font-bold text-white text-sm" data-dx="-1" data-dy="-1">↖</button>
+                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-9 flex items-center justify-center font-bold text-white text-sm" data-dx="0" data-dy="-1">↑</button>
+                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-9 flex items-center justify-center font-bold text-white text-sm" data-dx="1" data-dy="-1">↗</button>
                          
-                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-10 flex items-center justify-center font-bold text-white text-sm" data-dx="-1" data-dy="0">←</button>
-                         <button class="dpad-btn wait bg-gray-600 hover:bg-gray-500 rounded h-10 flex items-center justify-center font-bold text-xs text-yellow-200" data-dx="0" data-dy="0">WAIT</button>
-                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-10 flex items-center justify-center font-bold text-white text-sm" data-dx="1" data-dy="0">→</button>
+                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-9 flex items-center justify-center font-bold text-white text-sm" data-dx="-1" data-dy="0">←</button>
+                         <button class="dpad-btn wait bg-gray-600 hover:bg-gray-500 rounded h-9 flex items-center justify-center font-bold text-xs text-yellow-200" data-dx="0" data-dy="0">WAIT</button>
+                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-9 flex items-center justify-center font-bold text-white text-sm" data-dx="1" data-dy="0">→</button>
                          
-                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-10 flex items-center justify-center font-bold text-white text-sm" data-dx="-1" data-dy="1">↙</button>
-                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-10 flex items-center justify-center font-bold text-white text-sm" data-dx="0" data-dy="1">↓</button>
-                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-10 flex items-center justify-center font-bold text-white text-sm" data-dx="1" data-dy="1">↘</button>
+                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-9 flex items-center justify-center font-bold text-white text-sm" data-dx="-1" data-dy="1">↙</button>
+                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-9 flex items-center justify-center font-bold text-white text-sm" data-dx="0" data-dy="1">↓</button>
+                         <button class="dpad-btn bg-gray-700 hover:bg-gray-600 rounded h-9 flex items-center justify-center font-bold text-white text-sm" data-dx="1" data-dy="1">↘</button>
                     </div>
                 </div>
 
-                <div class="bg-gray-800 p-2 rounded flex-grow flex flex-col border border-gray-700 min-h-0">
+                <div class="bg-gray-800 p-2 rounded flex-grow flex flex-col border border-gray-700 min-h-[150px] lg:min-h-0">
                     <h3 class="text-xs font-bold text-gray-400 mb-1">Log</h3>
                     <div id="game-log" class="flex-grow overflow-y-auto text-xs space-y-1 text-gray-300 font-mono"></div>
                 </div>
