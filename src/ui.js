@@ -21,13 +21,52 @@ export function showModal(title, desc, content) {
     gameState.modalOpen = true;
 }
 
+export function animateDiceRoll(d1, d2, isHit) {
+    return new Promise((resolve) => {
+        const overlay = document.getElementById('dice-overlay');
+        const die1El = document.getElementById('die-1');
+        const die2El = document.getElementById('die-2');
+        const resultText = document.getElementById('dice-result-text');
+        
+        overlay.classList.remove('hidden');
+        die1El.classList.add('shake-dice');
+        die2El.classList.add('shake-dice');
+        resultText.innerText = '';
+        
+        const interval = setInterval(() => {
+            die1El.innerText = Math.floor(Math.random() * 6) + 1;
+            die2El.innerText = Math.floor(Math.random() * 6) + 1;
+        }, 50);
+
+        setTimeout(() => {
+            clearInterval(interval);
+            die1El.classList.remove('shake-dice');
+            die2El.classList.remove('shake-dice');
+            die1El.innerText = d1;
+            die2El.innerText = d2;
+            
+            if (isHit) {
+                resultText.innerText = "HIT!";
+                resultText.className = "h-8 text-2xl font-bold text-green-400 drop-shadow-md";
+            } else {
+                resultText.innerText = "MISS...";
+                resultText.className = "h-8 text-2xl font-bold text-gray-500 drop-shadow-md";
+            }
+
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                resolve(); 
+            }, 1200);
+
+        }, 800);
+    });
+}
+
 export function updateUI() {
-    // 1. Render Map Area
     const mapArea = document.getElementById('map-area');
     if(!mapArea) return;
     mapArea.innerHTML = ''; 
 
-    // Render Map Cards
     Object.values(gameState.mapLayout).forEach(card => {
         const cardEl = document.createElement('div');
         const isBoss = card.id.includes('boss');
@@ -62,7 +101,6 @@ export function updateUI() {
         mapArea.appendChild(cardEl);
     });
 
-    // Render Tokens
     Object.keys(gameState.tokens).forEach(key => {
         const t = gameState.tokens[key];
         const [tx, ty] = key.split(',').map(Number);
@@ -81,8 +119,6 @@ export function updateUI() {
             } else {
                 tokenEl.innerText = t.monsterData ? t.monsterData.sprite : "👹";
             }
-        // CHANGE: Removed "|| t.type === 'shop'" from this check below.
-        // Now shops will fall into the "else" block (Hidden Token) until revealed.
         } else if (t.revealed || t.type === 'key') {
             tokenEl.className = `token-marker token-${t.type}`;
             if(t.type==='loot') tokenEl.innerText = '💰';
@@ -90,26 +126,24 @@ export function updateUI() {
             else if(t.type==='key') tokenEl.innerText = '🔑';
             else if(t.type==='shop') tokenEl.innerText = '🛒';
         } else {
-            // Hidden Token (Shops now appear here until flipped)
             tokenEl.className = 'token-marker';
             tokenEl.innerText = '?';
         }
         mapArea.appendChild(tokenEl);
     });
 
-    // Render Players
     gameState.players.forEach((p, index) => {
         const pEl = document.createElement('div');
         const isActive = index === gameState.currentPlayerIndex;
-        pEl.className = `player-token token-${p.class.id} ${isActive ? 'active' : ''}`;
-        pEl.innerText = `P${index+1}`;
+        const isDown = p.downed;
+        pEl.className = `player-token token-${p.class.id} ${isActive ? 'active' : ''} ${isDown ? 'opacity-50 grayscale' : ''}`;
+        pEl.innerText = isDown ? '☠️' : `P${index+1}`;
         pEl.style.left = (p.x * CELL_SIZE + 10) + 'px';
         pEl.style.top = (p.y * CELL_SIZE + 10) + 'px';
         pEl.style.zIndex = 20;
         mapArea.appendChild(pEl);
     });
 
-    // Sidebar Stats
     const p = gameState.players[gameState.currentPlayerIndex];
     if(p) {
         const statsEl = document.getElementById('player-stats-container');
@@ -120,7 +154,10 @@ export function updateUI() {
                 <div class="text-right"><span class="text-yellow-400 font-bold text-xl">${p.gold} 🪙</span></div>
             </div>
             <div class="space-y-1 text-sm">
-                <div class="flex justify-between"><span>Health</span><span>${p.hp}/${p.maxHp}</span></div>
+                <div class="flex justify-between">
+                    <span>Health</span>
+                    <span class="${p.downed ? 'text-red-600 font-bold' : ''}">${p.hp}/${p.maxHp} ${p.downed ? '(DOWN)' : ''}</span>
+                </div>
                 <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden">
                     <div class="bg-green-600 h-full" style="width: ${hpPercent}%"></div>
                 </div>
@@ -128,54 +165,43 @@ export function updateUI() {
         document.getElementById('mov-points').innerText = p.moves;
         const invEl = document.getElementById('inventory-list');
         invEl.innerHTML = p.inventory.length ? p.inventory.map(i => `<span class="bg-gray-700 px-2 py-1 rounded mr-1">${i}</span>`).join('') : "Empty";
-    }
-}
-
-// --- DICE ANIMATION ---
-export function animateDiceRoll(d1, d2, isHit) {
-    return new Promise((resolve) => {
-        const overlay = document.getElementById('dice-overlay');
-        const die1El = document.getElementById('die-1');
-        const die2El = document.getElementById('die-2');
-        const resultText = document.getElementById('dice-result-text');
-        
-        // Reset state
-        overlay.classList.remove('hidden');
-        die1El.classList.add('shake-dice');
-        die2El.classList.add('shake-dice');
-        resultText.innerText = '';
-        
-        // Rapidly change numbers visually
-        const interval = setInterval(() => {
-            die1El.innerText = Math.floor(Math.random() * 6) + 1;
-            die2El.innerText = Math.floor(Math.random() * 6) + 1;
-        }, 50);
-
-        // Stop animation after 800ms
-        setTimeout(() => {
-            clearInterval(interval);
-            die1El.classList.remove('shake-dice');
-            die2El.classList.remove('shake-dice');
+    
+        const ctxContainer = document.getElementById('context-actions');
+        if (ctxContainer) {
+            ctxContainer.innerHTML = '';
             
-            // Show actual values
-            die1El.innerText = d1;
-            die2El.innerText = d2;
-            
-            // Show Hit/Miss
-            if (isHit) {
-                resultText.innerText = "HIT!";
-                resultText.className = "h-8 text-2xl font-bold text-green-400 drop-shadow-md";
-            } else {
-                resultText.innerText = "MISS...";
-                resultText.className = "h-8 text-2xl font-bold text-gray-500 drop-shadow-md";
+            if (!p.downed && !gameState.combat.active) {
+                gameState.players.forEach((target, idx) => {
+                    if (idx !== gameState.currentPlayerIndex && target.downed) {
+                        const dist = Math.abs(p.x - target.x) + Math.abs(p.y - target.y);
+                        let canRevive = false;
+                        
+                        if (dist === 0) {
+                            const key = `${p.x},${p.y}`;
+                            const token = gameState.tokens[key];
+                            const monsterHere = (token && token.type === 'monster');
+                            if (!monsterHere) canRevive = true;
+                        }
+                        else if (dist === 1) {
+                            canRevive = true;
+                        }
+
+                        if (canRevive) {
+                            const btn = document.createElement('button');
+                            btn.className = "w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-2 rounded text-xs animate-pulse";
+                            btn.innerText = `🚑 Revive ${target.class.name} (P${idx+1})`;
+                            btn.onclick = () => window.dispatchEvent(new CustomEvent('revive-player', { detail: { targetIndex: idx } }));
+                            ctxContainer.appendChild(btn);
+                        }
+                    }
+                });
             }
-
-            // Hide after short delay and resolve promise
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-                resolve(); // Resume game logic
-            }, 1200);
-
-        }, 800);
-    });
+            if (p.downed) {
+                 const warning = document.createElement('div');
+                 warning.className = "bg-red-900 text-red-200 p-2 rounded text-xs text-center border border-red-500 font-bold";
+                 warning.innerText = "You are unconscious! Wait for help.";
+                 ctxContainer.appendChild(warning);
+            }
+        }
+    }
 }
