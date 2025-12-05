@@ -130,3 +130,52 @@ export function updateUI() {
         invEl.innerHTML = p.inventory.length ? p.inventory.map(i => `<span class="bg-gray-700 px-2 py-1 rounded mr-1">${i}</span>`).join('') : "Empty";
     }
 }
+
+// --- DICE ANIMATION ---
+export function animateDiceRoll(d1, d2, isHit) {
+    return new Promise((resolve) => {
+        const overlay = document.getElementById('dice-overlay');
+        const die1El = document.getElementById('die-1');
+        const die2El = document.getElementById('die-2');
+        const resultText = document.getElementById('dice-result-text');
+        
+        // Reset state
+        overlay.classList.remove('hidden');
+        die1El.classList.add('shake-dice');
+        die2El.classList.add('shake-dice');
+        resultText.innerText = '';
+        
+        // Rapidly change numbers visually
+        const interval = setInterval(() => {
+            die1El.innerText = Math.floor(Math.random() * 6) + 1;
+            die2El.innerText = Math.floor(Math.random() * 6) + 1;
+        }, 50);
+
+        // Stop animation after 800ms
+        setTimeout(() => {
+            clearInterval(interval);
+            die1El.classList.remove('shake-dice');
+            die2El.classList.remove('shake-dice');
+            
+            // Show actual values
+            die1El.innerText = d1;
+            die2El.innerText = d2;
+            
+            // Show Hit/Miss
+            if (isHit) {
+                resultText.innerText = "HIT!";
+                resultText.className = "h-8 text-2xl font-bold text-green-400 drop-shadow-md";
+            } else {
+                resultText.innerText = "MISS...";
+                resultText.className = "h-8 text-2xl font-bold text-gray-500 drop-shadow-md";
+            }
+
+            // Hide after short delay and resolve promise
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                resolve(); // Resume game logic
+            }, 1200);
+
+        }, 800);
+    });
+}
