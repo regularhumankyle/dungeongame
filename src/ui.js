@@ -1,4 +1,3 @@
-// src/ui.js
 import { gameState } from './state.js';
 import { GAME_DATA, CELL_SIZE } from './data.js';
 
@@ -82,13 +81,16 @@ export function updateUI() {
             } else {
                 tokenEl.innerText = t.monsterData ? t.monsterData.sprite : "👹";
             }
-        } else if (t.revealed || t.type === 'shop' || t.type === 'key') {
+        // CHANGE: Removed "|| t.type === 'shop'" from this check below.
+        // Now shops will fall into the "else" block (Hidden Token) until revealed.
+        } else if (t.revealed || t.type === 'key') {
             tokenEl.className = `token-marker token-${t.type}`;
             if(t.type==='loot') tokenEl.innerText = '💰';
             else if(t.type==='event') tokenEl.innerText = '⚡';
             else if(t.type==='key') tokenEl.innerText = '🔑';
             else if(t.type==='shop') tokenEl.innerText = '🛒';
         } else {
+            // Hidden Token (Shops now appear here until flipped)
             tokenEl.className = 'token-marker';
             tokenEl.innerText = '?';
         }
